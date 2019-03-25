@@ -10,7 +10,8 @@ import {
   PixelRatio,
   Animated,
   Image,
-  Platform
+  Platform,
+  YellowBox
 } from 'react-native'
 
 import React, { Component } from 'react'
@@ -107,11 +108,12 @@ export default class SearchList extends Component {
     })
     this.state = {
       isSearching: false,
-      searchStr: '',
       animatedValue: new Animated.Value(0),
       dataSource: listDataSource
     }
+    YellowBox.ignoreWarnings(['ListView']);
 
+    this.searchStr = ''
     this.sectionIDs = []
     this.copiedSource = []
 
@@ -156,7 +158,7 @@ export default class SearchList extends Component {
   }
 
   search (input) {
-    this.setState({searchStr: input})
+    this.searchStr = input
     if (input) {
       input = sTrim(input)
       const tempResult = SearchService.search(this.copiedSource, input.toLowerCase())
@@ -175,6 +177,7 @@ export default class SearchList extends Component {
         } = SearchService.sortResultList(tempResult, this.props.resultSortFunc)
         this.rowIds = rowIds
         this.setState({
+          isSearching: true,
           dataSource: this.state.dataSource.cloneWithRowsAndSections(
             searchResultWithSection,
             [''],
@@ -426,12 +429,12 @@ export default class SearchList extends Component {
    * @private
    */
   _renderSearchBody () {
-    const {isSearching, searchStr} = this.state
+    const {isSearching} = this.state
     const {renderEmptyResult, renderEmpty, data} = this.props
 
     const isEmptyResult = this.state.dataSource.getRowCount() === 0
     if (isSearching && isEmptyResult && renderEmptyResult) {
-      return renderEmptyResult(searchStr)
+      return renderEmptyResult(this.searchStr)
     } else {
       if (data && data.length > 0) {
         return (
@@ -444,6 +447,7 @@ export default class SearchList extends Component {
             keyboardDismissMode='on-drag'
             keyboardShouldPersistTaps='always'
             showsVerticalScrollIndicator
+            removeClippedSubviews={false}
 
             renderRow={this.props.renderRow || this._renderRow.bind(this)}
             renderSeparator={this.props.renderSeparator || this._renderSeparator.bind(this)}
@@ -478,8 +482,8 @@ export default class SearchList extends Component {
    * @private
    */
   _renderMask () {
-    const {isSearching, searchStr} = this.state
-    if (isSearching && !searchStr) {
+    const {isSearching} = this.state
+    if (isSearching && !this.searchStr) {
       return (
         <Touchable
           onPress={this.cancelSearch.bind(this)} underlayColor='rgba(0, 0, 0, 0.0)'
