@@ -95,10 +95,12 @@ let styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+    textAlign: 'center',
     flex: 1
   },
   titleTextStyle: {
     fontSize: 17, 
     fontWeight: "600",
+    textAlign: 'center',
   }
 })
