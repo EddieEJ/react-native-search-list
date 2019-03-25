@@ -7,7 +7,11 @@ import {
   Animated
 } from 'react-native'
 import PropTypes from 'prop-types'
+import LinearGradient from 'react-native-linear-gradient';
 import Theme from './Theme'
+
+// Create animatable button component for transitions.
+const AnimatedLG = Animated.createAnimatedComponent(LinearGradient);
 
 let statusBarSize = (Platform.OS === 'ios' ? 20 : 0)
 
@@ -26,22 +30,23 @@ export default class Toolbar extends Component {
     textColor: 'white'
   }
 
-  render () {
-    const {style} = this.props
+  render() {
+    const { style } = this.props
     return (
-      <Animated.View
+      <AnimatedLG
+        colors={['#d51035', '#f48161']}
         style={[styles.container, style]}
-        shouldRasterizeIOS
-        renderToHardwareTextureAndroid>
+        start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+      >
         {this._renderBackButton()}
         {this._renderTitle()}
         {this._renderRightButton()}
-      </Animated.View>
+      </AnimatedLG>
     )
   }
 
-  _renderBackButton () {
-    const {renderBackButton} = this.props
+  _renderBackButton() {
+    const { renderBackButton } = this.props
     if (renderBackButton) {
       return renderBackButton()
     }
@@ -49,8 +54,8 @@ export default class Toolbar extends Component {
     return null
   }
 
-  _renderTitle () {
-    const {renderTitle, title, textColor} = this.props
+  _renderTitle() {
+    const { renderTitle, title, textColor } = this.props
     if (renderTitle) {
       return renderTitle()
     } else {
@@ -68,8 +73,8 @@ export default class Toolbar extends Component {
     }
   }
 
-  _renderRightButton () {
-    const {renderRightButton} = this.props
+  _renderRightButton() {
+    const { renderRightButton } = this.props
     if (renderRightButton) {
       return renderRightButton()
     }
@@ -93,6 +98,7 @@ let styles = StyleSheet.create({
     flex: 1
   },
   titleTextStyle: {
-    fontSize: 18
+    fontSize: 17, 
+    fontWeight: "600",
   }
 })
