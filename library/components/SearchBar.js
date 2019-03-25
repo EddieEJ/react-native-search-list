@@ -12,6 +12,7 @@ import {
   StyleSheet
 } from 'react-native'
 import React, { Component } from 'react'
+import LinearGradient from 'react-native-linear-gradient';
 
 import PropTypes from 'prop-types'
 import Theme from './Theme'
